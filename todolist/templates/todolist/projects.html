@@ -1,0 +1,40 @@
+{% extends 'docmgr/base.html' %}
+
+{% block title %}
+    <title>Projects</title>
+{% endblock %}
+
+
+{% block sub_menu %}
+    <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'docmgr:add_project' %}">Add project</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+{% endblock %}
+
+{% block body_block %}
+    <div class="jumbotron">
+        {% if project_list %}
+            <ul>
+                {% for name, desc, id in project_list %}
+                    <li> {{ name }} </li>
+                    <p>  {{ desc }} </p>
+                    <form method="POST" action="{% url 'docmgr:delete_project' id %}">
+                        {{ form.as_p }}
+                        {% csrf_token %}
+                        <input type="submit" , class="btn btn-primary" , value="Delete">
+                    </form>
+
+                    <br/>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No projects available</p>
+        {% endif %}
+    </div>
+{% endblock %}

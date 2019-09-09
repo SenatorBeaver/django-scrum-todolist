@@ -1,0 +1,17 @@
+{% extends 'docmgr/documents_list.html' %}
+
+{% block title %}
+    <title>Add doc {{ prefix }} revision</title>
+{% endblock %}
+
+{% block body_block %}
+    <div class="container">
+        <form method="POST" >
+            {{ form.as_p }}
+            {% csrf_token %}
+            <input type="submit" , class="btn btn-primary" , value="Submit">
+        </form>
+
+    </div>
+
+{% endblock %}
