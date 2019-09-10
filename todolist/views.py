@@ -34,3 +34,30 @@ def form_delete_project(request, project_id):
             to_delete.delete()
     return projects(request)
 
+
+def todoitems(request):
+    todo_objects = models.TodoItem.objects.all()
+    todoitems_list = [(i.text, i.label_id, i.due_date) for i in todo_objects]
+    context = {'todo_list': todoitems_list }
+    return render(request, 'todolist/todo.html', context)
+
+def form_add_todo(request):
+    form = forms.FormTodo()
+
+    if request.method == 'POST':
+        form = forms.FormTodo(request.POST)
+        if form.is_valid():
+            form.save(commit=True)
+        return todoitems(request)
+
+    return render(request, 'todolist/form_add_todoitem.html', {'form':form})
+
+def form_delete_todoitem(request, todo_item_id):
+    to_delete = get_object_or_404(models.TodoItem, todo_item_id=todo_item_id)
+
+    if request.method == 'POST':
+        form = forms.FormTodoDelete(request.POST)
+        if form.is_valid():
+            to_delete.delete()
+    return todoitems(request)
+

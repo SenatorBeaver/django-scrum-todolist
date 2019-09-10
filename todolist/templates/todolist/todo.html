@@ -1,0 +1,40 @@
+{% extends 'todolist/base.html' %}
+
+{% block title %}
+    <title>Todo</title>
+{% endblock %}
+
+
+{% block sub_menu %}
+    <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'todolist:todoitem_add' %}">Add todo</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+{% endblock %}
+
+{% block body_block %}
+    <div class="jumbotron">
+        {% if todo_list %}
+            <ul>
+                {% for name, desc, id in todo_list %}
+                    <li> {{ name }} </li>
+                    <p>  {{ desc }} </p>
+                    <form method="POST" action="{% url 'todolist:delete_todo' id %}">
+                        {{ form.as_p }}
+                        {% csrf_token %}
+                        <input type="submit" , class="btn btn-primary" , value="Delete">
+                    </form>
+
+                    <br/>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No todo items available</p>
+        {% endif %}
+    </div>
+{% endblock %}
