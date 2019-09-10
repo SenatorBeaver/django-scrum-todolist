@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'django_todolist.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'django',
+        'NAME': 'todolist',
         'USER': 'django',
         'PASSWORD': 'django',
         'HOST': 'localhost',
@@ -129,4 +129,4 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 #TODO set in future
-#STATIC_ROOT = '/home/codebuddy/docmgr/static'
+#STATIC_ROOT = '/home/xxx/todolist/static'

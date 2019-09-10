@@ -6,7 +6,7 @@ class Label(models.Model):
     text = models.CharField(max_length=100, unique=True)
 
     def __repr__(self):
-        return f"Label({self.label_id}) doc_prefix_id:'{self.text}'"
+        return f"Label({self.label_id}) text:'{self.text}'"
 
     def __str__(self):
         return self.__repr__()
@@ -24,7 +24,7 @@ class Project(models.Model):
 
 class TodoItem(models.Model):
     todo_item_id = models.AutoField(primary_key=True)
-    text = models.CharField(unique=True, max_length=1024)
+    text = models.CharField(unique=False, max_length=1024)
     label_id = models.ForeignKey(Label, on_delete=models.CASCADE)
     due_date = models.DateTimeField()
 
