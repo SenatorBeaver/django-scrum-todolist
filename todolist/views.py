@@ -14,14 +14,6 @@ def projects(request):
     context = {'project_list': project_list }
     return render(request, 'todolist/projects.html', context)
 
-def todo_by_proj(request, project_id):
-    project = get_object_or_404(models.Project, project_id=project_id)
-    todo_objects = models.TodoItem.objects.all()
-    todo_list = [(i.text, i.todo_item_id) for i in todo_objects]
-    context = {'todo_list': todo_list }
-    return render(request, 'todolist/todo.html', context)
-
-
 def form_add_project(request):
     form = forms.FormProject()
 
@@ -42,12 +34,18 @@ def form_delete_project(request, project_id):
             to_delete.delete()
     return projects(request)
 
-
-def todoitems(request):
+def todo_by_proj(request, project_id):
+    if project_id != None:
+        project = get_object_or_404(models.Project, project_id=project_id)
     todo_objects = models.TodoItem.objects.all()
     todoitems_list = [(i.text, i.label_id, i.due_date, i.todo_item_id) for i in todo_objects]
     context = {'todo_list': todoitems_list }
     return render(request, 'todolist/todo.html', context)
+
+
+def todoitems(request):
+    return todo_by_proj(request, project_id=None)
+
 
 def form_add_todo(request):
     form = forms.FormTodo()
