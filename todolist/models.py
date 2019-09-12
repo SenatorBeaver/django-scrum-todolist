@@ -25,7 +25,7 @@ class Project(models.Model):
 class TodoItem(models.Model):
     todo_item_id = models.AutoField(primary_key=True)
     text = models.CharField(unique=False, max_length=1024)
-    label_id = models.ForeignKey(Label, on_delete=models.CASCADE)
+    label_id = models.ForeignKey(Label, on_delete=models.CASCADE, null=True)
     due_date = models.DateTimeField()
 
 

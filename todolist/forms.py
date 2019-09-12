@@ -20,9 +20,10 @@ class FormTodo(forms.ModelForm):
     class Meta():
         model = models.TodoItem
         fields = '__all__'
-        widgets = {
-            'description': forms.Textarea(),
-        }
+
+    def __init__(self, *args, **kwargs):
+        super(FormTodo, self).__init__(*args, **kwargs)
+        self.fields['label_id'].required = False
 
 
 class FormTodoDelete(forms.ModelForm):

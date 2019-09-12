@@ -22,7 +22,7 @@
         {% if project_list %}
             <ul>
                 {% for name, desc, id in project_list %}
-                    <li> {{ name }} </li>
+                    <li> <a href="{% url 'todolist:show_todo_by_proj' id %}">{{ name }}</a>  </li>
                     <p>  {{ desc }} </p>
                     <form method="POST" action="{% url 'todolist:delete_project' id %}">
                         {{ form.as_p }}
