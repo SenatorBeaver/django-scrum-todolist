@@ -27,6 +27,15 @@ class TodoItem(models.Model):
     text = models.CharField(unique=False, max_length=1024)
     label_id = models.ForeignKey(Label, on_delete=models.CASCADE, null=True)
     due_date = models.DateTimeField()
+    PRIORITY_CHOICES = [
+        (0, 'Najważeniejszy'),
+        (1, 'Prawie najważniejszy'),
+        (2, 'Wysoki'),
+        (3, 'Normalny'),
+        (4, 'Niski'),
+    ]
+    priority = models.PositiveSmallIntegerField(choices=PRIORITY_CHOICES, default=3)
+
 
 
     def __repr__(self):
