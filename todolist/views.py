@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.views import View
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 
 from . import models
 from . import forms
@@ -59,6 +59,11 @@ class TodoitemsListView(ListView):
             return models.TodoItem.objects.filter(project=project)
         else:
             return models.TodoItem.objects.all()
+
+class TodoitemDetailView(DetailView):
+    context_object_name = 'todoitem_detail'
+    model = models.TodoItem
+    template_name = 'todolist/todoitem_detail.html'
 
 def form_add_todo(request):
     form = forms.FormTodo()

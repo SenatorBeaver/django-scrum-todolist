@@ -1,0 +1,30 @@
+{% extends 'todolist/base.html' %}
+
+{% block title %}
+    <title>Todoitem detail</title>
+{% endblock %}
+
+
+{% block sub_menu %}
+    <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'todolist:todoitem_add' %}">Add todo</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+{% endblock %}
+
+{% block body_block %}
+    <div class="jumbotron">
+
+    <h1>Welcome to todoitem detail view</h1>
+    <p>ID: {{ todoitem_detail.todo_item_id }}</p>
+    <p>TEXT: {{ todoitem_detail.text }}</p>
+    <p>PRIORITY: {{ todoitem_detail.get_priority_display }}</p>
+    <p>DUE_DATE: {{ todoitem_detail.due_date }}</p>
+    <p>PROJECT: {{ todoitem_detail.project }}</p>
+    </div>
+{% endblock %}

@@ -15,4 +15,5 @@ urlpatterns = [
     path('todo/delete/<int:todo_item_id>', views.form_delete_todoitem, name='todoitem_delete'),
     path('todo/', views.TodoitemsListView.as_view(), name='todoitems'),
     path('todo/by_project/<int:project_id>', views.TodoitemsListView.as_view(), name='show_todo_by_proj'),
+    path('todo/<pk>', views.TodoitemDetailView.as_view(), name='todoitem_detail'),
 ]
