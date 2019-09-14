@@ -21,7 +21,7 @@
     <div class="jumbotron">
         {% if todo_list %}
             <ul>
-                {% for text,label_id,due_date,todo_id  in todo_list %}
+                {% for text,label_id,due_date,todo_id in todo_list %}
                     <li> {{ text }} </li>
                     <p>  {{ due_date }} </p>
                     <form method="POST" action="{% url 'todolist:todoitem_delete' todo_id %}">

@@ -35,8 +35,7 @@ class TodoItem(models.Model):
         (4, 'Niski'),
     ]
     priority = models.PositiveSmallIntegerField(choices=PRIORITY_CHOICES, default=3)
-
-
+    project = models.ForeignKey(Project, related_name='project_todoitems', on_delete=models.CASCADE, null=True)
 
     def __repr__(self):
         return f"TodoItem({self.todo_item_id}) '{self.text}'"

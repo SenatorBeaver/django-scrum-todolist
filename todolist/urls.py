@@ -11,8 +11,10 @@ urlpatterns = [
     path('projects', views.projects, name='projects'),
     path('projects/add', views.form_add_project, name='add_project'),
     path('projects/delete/<int:project_id>', views.form_delete_project, name='delete_project'),
-    path('todo/by_id/<int:project_id>', views.todo_by_proj, name='show_todo_by_proj'),
-    path('todo/', views.todoitems, name='todoitems'),
+    #path('todo/by_id/<int:project_id>', views.todo_by_proj, name='show_todo_by_proj_old'),
+    #path('todo_old/', views.todoitems, name='todoitems_old'),
     path('todo/add', views.form_add_todo, name='todoitem_add'),
     path('todo/delete/<int:todo_item_id>', views.form_delete_todoitem, name='todoitem_delete'),
+    path('todo/', views.TodoitemsCBV.as_view(), name='todoitems'),
+    path('todo/by_id/<int:project_id>', views.TodoitemsCBV.as_view(), name='show_todo_by_proj'),
 ]

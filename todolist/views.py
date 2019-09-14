@@ -1,5 +1,8 @@
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
+from django.views import View
+from django.views.generic import TemplateView
+
 from . import models
 from . import forms
 
@@ -46,6 +49,19 @@ def todo_by_proj(request, project_id):
 def todoitems(request):
     return todo_by_proj(request, project_id=None)
 
+class TodoitemsCBV(TemplateView):
+    template_name = 'todolist/todo.html'
+
+    def get_context_data(self, **kwargs):
+        if 'project_id' in self.kwargs:
+            project = get_object_or_404(models.Project, project_id=self.kwargs['project_id'])
+            todo_objects = models.TodoItem.objects.filter(project=project)
+        else:
+            todo_objects = models.TodoItem.objects.all()
+        todoitems_list = [(i.text, i.label_id, i.due_date, i.todo_item_id) for i in todo_objects]
+        context = super().get_context_data(**kwargs)
+        context['todo_list'] = todoitems_list
+        return context
 
 def form_add_todo(request):
     form = forms.FormTodo()
