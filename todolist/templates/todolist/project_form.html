@@ -1,7 +1,11 @@
 {% extends 'todolist/projects.html' %}
 
 {% block title %}
-    <title>Add project</title>
+    {% if not form.instance.pk %}
+    <title>Create project</title>
+    {% else %}
+    <title>Update project</title>
+    {% endif %}
 {% endblock %}
 
 {% block body_block %}

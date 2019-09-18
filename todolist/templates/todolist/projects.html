@@ -10,7 +10,7 @@
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
-                    <li class="nav-item"><a class="nav-link" href="{% url 'todolist:add_project' %}">Add project</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'todolist:project_add' %}">Add project</a></li>
                 </ul>
             </div>
         </nav>
@@ -19,17 +19,18 @@
 
 {% block body_block %}
     <div class="jumbotron">
-        {% if project_list %}
+        {% if projects %}
             <ul>
-                {% for name, desc, id in project_list %}
-                    <li> <a href="{% url 'todolist:show_todo_by_proj' id %}">{{ name }}</a>  </li>
-                    <p>  {{ desc }} </p>
-                    <form method="POST" action="{% url 'todolist:delete_project' id %}">
+                {% for project in projects %}
+                    <li> <a href="{% url 'todolist:show_todo_by_proj' project.project_id %}">{{ project.name }}</a>  </li>
+                    <p>  {{ project.desc }} </p>
+                    <!--
+                    <form method="POST" action="{# url 'todolist:project_delete' id #}">
                         {{ form.as_p }}
                         {% csrf_token %}
                         <input type="submit" , class="btn btn-primary" , value="Delete">
                     </form>
-
+                    -->
                     <br/>
                 {% endfor %}
             </ul>

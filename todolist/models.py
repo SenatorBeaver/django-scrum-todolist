@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 
 class Label(models.Model):
@@ -16,11 +17,15 @@ class Project(models.Model):
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=200)
 
+    def get_absolute_url(self):
+        return reverse('todolist:project_details', kwargs={'pk':self.project_id})
+
     def __str__(self):
         return f"Project ID:{self.project_id} NAME:'{self.name}'. Description:'{self.description}'"
 
     def __repr__(self):
         return self.__str__()
+
 
 class TodoItem(models.Model):
     todo_item_id = models.AutoField(primary_key=True)
