@@ -37,7 +37,7 @@ class ProjectDeleteView(DeleteView):
 
 class TodoitemCreateView(CreateView):
     model = models.TodoItem
-    fields = ('text', 'priority', 'due_date')
+    fields = ('text', 'priority', 'due_date', 'project')
 
 class TodoitemUpdateView(UpdateView):
     model = models.TodoItem
@@ -53,8 +53,8 @@ class TodoitemsListView(ListView):
     context_object_name = 'todo_list'
     model=models.TodoItem
     def get_queryset(self):
-        if 'project_id' in self.kwargs:
-            project = get_object_or_404(models.Project, project_id=self.kwargs['project_id'])
+        if 'id' in self.kwargs:
+            project = get_object_or_404(models.Project, id=self.kwargs['id'])
             return models.TodoItem.objects.filter(project=project)
         else:
             return models.TodoItem.objects.all()

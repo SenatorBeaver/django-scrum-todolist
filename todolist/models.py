@@ -40,6 +40,9 @@ class TodoItem(models.Model):
     priority = models.PositiveSmallIntegerField(choices=PRIORITY_CHOICES, default=3)
     project = models.ForeignKey(Project, related_name='project_todoitems', on_delete=models.CASCADE, null=True)
 
+    def get_absolute_url(self):
+        return reverse('todolist:todoitem_detail', kwargs={'pk':self.id})
+
     def __repr__(self):
         return f"TodoItem({self.id}) '{self.text}'"
 

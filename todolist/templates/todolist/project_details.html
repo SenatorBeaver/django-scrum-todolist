@@ -1,7 +1,7 @@
 {% extends 'todolist/base.html' %}
 
 {% block title %}
-    <title>Todoitem detail</title>
+    <title>Project detail</title>
 {% endblock %}
 
 
@@ -20,11 +20,9 @@
 {% block body_block %}
     <div class="jumbotron">
 
-    <h1>Welcome to todoitem detail view</h1>
-    <p>ID: {{ todoitem_detail.todo_item_id }}</p>
-    <p>TEXT: {{ todoitem_detail.text }}</p>
-    <p>PRIORITY: {{ todoitem_detail.get_priority_display }}</p>
-    <p>DUE_DATE: {{ todoitem_detail.due_date }}</p>
-    <p>PROJECT: {{ todoitem_detail.project }}</p>
+    <h1>Welcome to project detail view</h1>
+    <p>ID: {{ project_detail.id }}</p>
+    <p>Name: {{ project_detail.name }}</p>
+    <p>Description: {{ project_detail.description }}</p>
     </div>
 {% endblock %}
