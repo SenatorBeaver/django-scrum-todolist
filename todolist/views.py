@@ -1,7 +1,7 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
-from django.urls import reverse
-from django.views.generic import ListView, DetailView, CreateView
+from django.urls import reverse, reverse_lazy
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
 from . import models
 from . import forms
@@ -27,9 +27,26 @@ class ProjectCreateView(CreateView):
     model = models.Project
     fields = ('name', 'description', )
 
-class ProjectUpdateView(CreateView):
+class ProjectUpdateView(UpdateView):
     model = models.Project
     fields = ('name', 'description', )
+
+class ProjectDeleteView(DeleteView):
+    model = models.Project
+    success_url = reverse_lazy('todolist:projects')
+
+class TodoitemCreateView(CreateView):
+    model = models.TodoItem
+    fields = ('text', 'priority', 'due_date')
+
+class TodoitemUpdateView(UpdateView):
+    model = models.TodoItem
+    fields = ('text', 'priority', 'due_date')
+
+class TodoitemDeleteView(DeleteView):
+    model = models.TodoItem
+    success_url = reverse_lazy('todolist:projects')
+
 
 class TodoitemsListView(ListView):
     template_name = 'todolist/todo.html'
@@ -46,24 +63,4 @@ class TodoitemDetailView(DetailView):
     context_object_name = 'todoitem_detail'
     model = models.TodoItem
     template_name = 'todolist/todoitem_detail.html'
-
-def form_add_todo(request):
-    form = forms.FormTodo()
-
-    if request.method == 'POST':
-        form = forms.FormTodo(request.POST)
-        if form.is_valid():
-            form.save(commit=True)
-        return HttpResponseRedirect(reverse('todolist:todoitems'))
-
-    return render(request, 'todolist/form_add_todoitem.html', {'form':form})
-
-def form_delete_todoitem(request, todo_item_id):
-    to_delete = get_object_or_404(models.TodoItem, todo_item_id=todo_item_id)
-
-    if request.method == 'POST':
-        form = forms.FormTodoDelete(request.POST)
-        if form.is_valid():
-            to_delete.delete()
-    return HttpResponseRedirect(reverse('todolist:todoitems'))
 
