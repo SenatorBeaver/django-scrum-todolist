@@ -7,7 +7,7 @@ app_name = 'todolist'
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
-    path('', views.index, name='index'),
+    path('', views.TodoitemsToday.as_view(), name='index'),
     path('projects/', views.ProjectListView.as_view(), name='projects'),
     path('projects/add', views.ProjectCreateView.as_view(), name='project_add'),
     path('projects/<pk>', views.ProjectDetailView.as_view(), name='project_details'),

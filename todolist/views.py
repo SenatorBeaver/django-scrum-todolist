@@ -1,15 +1,14 @@
+from django.forms import ModelForm, SelectDateWidget, SplitDateTimeWidget, DateTimeInput
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse, reverse_lazy
+from django.utils import timezone
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
 from . import models
 from . import forms
 
 # Create your views here.
-
-def index(request):
-    return render(request, 'todolist/base.html')
 
 class ProjectListView(ListView):
     template_name = 'todolist/projects.html'
@@ -35,13 +34,20 @@ class ProjectDeleteView(DeleteView):
     model = models.Project
     success_url = reverse_lazy('todolist:projects')
 
+class TodoitemForm(ModelForm):
+    class Meta:
+        model = models.TodoItem
+        fields = ('text', 'priority', 'due_date', 'project')
+        widgets = {
+            'due_date': DateTimeInput
+        }
+
 class TodoitemCreateView(CreateView):
     model = models.TodoItem
-    fields = ('text', 'priority', 'due_date', 'project')
-
-class TodoitemUpdateView(UpdateView):
-    model = models.TodoItem
-    fields = ('text', 'priority', 'due_date')
+    form_class = TodoitemForm
+	
+class TodoitemUpdateView(TodoitemCreateView):
+    pass
 
 class TodoitemDeleteView(DeleteView):
     model = models.TodoItem
@@ -58,6 +64,12 @@ class TodoitemsListView(ListView):
             return models.TodoItem.objects.filter(project=project)
         else:
             return models.TodoItem.objects.all()
+
+class TodoitemsToday(TodoitemsListView):
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        tomorrow = timezone.datetime.today() + timezone.timedelta(days=1)
+        return queryset.filter(due_date__lt=timezone.make_aware(tomorrow))
 
 class TodoitemDetailView(DetailView):
     context_object_name = 'todoitem'
