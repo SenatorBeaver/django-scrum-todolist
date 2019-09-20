@@ -61,9 +61,9 @@ class TodoitemsListView(ListView):
     def get_queryset(self):
         if 'id' in self.kwargs:
             project = get_object_or_404(models.Project, id=self.kwargs['id'])
-            return models.TodoItem.objects.filter(project=project)
+            return models.TodoItem.objects.filter(done=False).filter(project=project)
         else:
-            return models.TodoItem.objects.all()
+            return models.TodoItem.objects.filter(done=False)
 
 class TodoitemsToday(TodoitemsListView):
     def get_queryset(self):
@@ -76,3 +76,10 @@ class TodoitemDetailView(DetailView):
     model = models.TodoItem
     template_name = 'todolist/todoitem_detail.html'
 
+class TodoitemDone(TodoitemDetailView):
+    model = models.TodoItem
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset)
+        obj.done = True
+        obj.save()
+        return obj
