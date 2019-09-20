@@ -21,10 +21,13 @@
     <div class="jumbotron">
 
     <h1>Welcome to todoitem detail view</h1>
-    <p>ID: {{ todoitem_detail.id }}</p>
-    <p>TEXT: {{ todoitem_detail.text }}</p>
-    <p>PRIORITY: {{ todoitem_detail.get_priority_display }}</p>
-    <p>DUE_DATE: {{ todoitem_detail.due_date }}</p>
-    <p>PROJECT: {{ todoitem_detail.project }}</p>
+    <p>ID: {{ todoitem.id }}</p>
+    <p>TEXT: {{ todoitem.text }}</p>
+    <p>PRIORITY: {{ todoitem.get_priority_display }}</p>
+    <p>DUE_DATE: {{ todoitem.due_date }}</p>
+    <p>PROJECT: {{ todoitem.project }}</p>
+    <a href="{% url 'todolist:todoitem_delete' todoitem.id %}" class="btn btn-danger">Delete</a>
+    <a href="{% url 'todolist:todoitem_edit' todoitem.id %}" class="btn btn-warning">Edit</a>
+
     </div>
 {% endblock %}

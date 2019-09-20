@@ -45,11 +45,11 @@ class TodoitemUpdateView(UpdateView):
 
 class TodoitemDeleteView(DeleteView):
     model = models.TodoItem
-    success_url = reverse_lazy('todolist:projects')
+    success_url = reverse_lazy('todolist:todoitems')
 
 
 class TodoitemsListView(ListView):
-    template_name = 'todolist/todo.html'
+    template_name = 'todolist/todoitem.html'
     context_object_name = 'todo_list'
     model=models.TodoItem
     def get_queryset(self):
@@ -60,7 +60,7 @@ class TodoitemsListView(ListView):
             return models.TodoItem.objects.all()
 
 class TodoitemDetailView(DetailView):
-    context_object_name = 'todoitem_detail'
+    context_object_name = 'todoitem'
     model = models.TodoItem
     template_name = 'todolist/todoitem_detail.html'
 

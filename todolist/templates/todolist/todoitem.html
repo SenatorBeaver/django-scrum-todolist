@@ -21,15 +21,9 @@
     <div class="jumbotron">
         {% if todo_list %}
             <ul>
-                {% for todo in todo_list %}
-                    <li><a href="{% url 'todolist:todoitem_detail' todo.id %}">{{ todo.text }}</a> </li>
-                    <p>  {{ todo.due_date }} </p>
-                    <form method="POST" action="{% url 'todolist:todoitem_delete' todo.id %}">
-                        {{ form.as_p }}
-                        {% csrf_token %}
-                        <input type="submit" , class="btn btn-primary" , value="Delete">
-                    </form>
-
+                {% for todoitem in todo_list %}
+                    <li><a href="{% url 'todolist:todoitem_detail' todoitem.id %}">{{ todoitem.text }}</a> </li>
+                    <p>  {{ todoitem.due_date }} </p>
                     <br/>
                 {% endfor %}
             </ul>
