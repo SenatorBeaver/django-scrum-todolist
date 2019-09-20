@@ -1,8 +1,7 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
-from django.urls import reverse
-from django.views import View
-from django.views.generic import ListView, DetailView
+from django.urls import reverse, reverse_lazy
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
 from . import models
 from . import forms
@@ -12,65 +11,56 @@ from . import forms
 def index(request):
     return render(request, 'todolist/base.html')
 
-def projects(request):
-    projects = models.Project.objects.all()
-    project_list = [(i.name, i.description, i.project_id) for i in projects]
-    context = {'project_list': project_list }
-    return render(request, 'todolist/projects.html', context)
+class ProjectListView(ListView):
+    template_name = 'todolist/projects.html'
+    context_object_name = 'projects'
+    model=models.Project
+    def get_queryset(self):
+        return models.Project.objects.all()
 
-def form_add_project(request):
-    form = forms.FormProject()
+class ProjectDetailView(DetailView):
+    context_object_name = 'project_detail'
+    model = models.Project
+    template_name = 'todolist/project_details.html'
 
-    if request.method == 'POST':
-        form = forms.FormProject(request.POST)
-        if form.is_valid():
-            form.save(commit=True)
-        return projects(request)
+class ProjectCreateView(CreateView):
+    model = models.Project
+    fields = ('name', 'description', )
 
-    return render(request, 'todolist/form_add_project.html', {'form':form})
+class ProjectUpdateView(UpdateView):
+    model = models.Project
+    fields = ('name', 'description', )
 
-def form_delete_project(request, project_id):
-    to_delete = get_object_or_404(models.Project, project_id=project_id)
+class ProjectDeleteView(DeleteView):
+    model = models.Project
+    success_url = reverse_lazy('todolist:projects')
 
-    if request.method == 'POST':
-        form = forms.FormProjectDelete(request.POST)
-        if form.is_valid():
-            to_delete.delete()
-    return projects(request)
+class TodoitemCreateView(CreateView):
+    model = models.TodoItem
+    fields = ('text', 'priority', 'due_date', 'project')
+
+class TodoitemUpdateView(UpdateView):
+    model = models.TodoItem
+    fields = ('text', 'priority', 'due_date')
+
+class TodoitemDeleteView(DeleteView):
+    model = models.TodoItem
+    success_url = reverse_lazy('todolist:todoitems')
+
 
 class TodoitemsListView(ListView):
-    template_name = 'todolist/todo.html'
+    template_name = 'todolist/todoitem.html'
     context_object_name = 'todo_list'
     model=models.TodoItem
     def get_queryset(self):
-        if 'project_id' in self.kwargs:
-            project = get_object_or_404(models.Project, project_id=self.kwargs['project_id'])
+        if 'id' in self.kwargs:
+            project = get_object_or_404(models.Project, id=self.kwargs['id'])
             return models.TodoItem.objects.filter(project=project)
         else:
             return models.TodoItem.objects.all()
 
 class TodoitemDetailView(DetailView):
-    context_object_name = 'todoitem_detail'
+    context_object_name = 'todoitem'
     model = models.TodoItem
     template_name = 'todolist/todoitem_detail.html'
-
-def form_add_todo(request):
-    form = forms.FormTodo()
-
-    if request.method == 'POST':
-        form = forms.FormTodo(request.POST)
-        if form.is_valid():
-            form.save(commit=True)
-        return HttpResponseRedirect(reverse('todolist:todoitems'))
-
-    return render(request, 'todolist/form_add_todoitem.html', {'form':form})
-
-def form_delete_todoitem(request, todo_item_id):
-    to_delete = get_object_or_404(models.TodoItem, todo_item_id=todo_item_id)
-
-    if request.method == 'POST':
-        form = forms.FormTodoDelete(request.POST)
-        if form.is_valid():
-            to_delete.delete()
-    return HttpResponseRedirect(reverse('todolist:todoitems'))
 

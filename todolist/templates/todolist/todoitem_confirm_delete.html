@@ -1,0 +1,20 @@
+{% extends 'todolist/base.html' %}
+
+{% block title %}
+    <title>Confirm delete todoitem</title>
+{% endblock %}
+
+{% block body_block %}
+    <div class="jumbotron">
+
+    <h1>Please confirm deletion</h1>
+    <p> of <br />"{{ todoitem.text }}"</p>
+    <form method="post">
+  {% csrf_token %}
+  <input type="submit" class="btn btn-danger" value="Delete">
+  <a href="{% url 'todolist:todoitem_detail' pk=todoitem.id %} ">Cancel</a>
+
+</form>
+
+    </div>
+{% endblock %}

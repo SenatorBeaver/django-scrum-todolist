@@ -1,0 +1,21 @@
+{% extends 'todolist/base.html' %}
+
+{% block title %}
+    {% if not form.instance.pk %}
+    <title>Create todoitem</title>
+    {% else %}
+    <title>Update todoitem</title>
+    {% endif %}
+{% endblock %}
+
+{% block body_block %}
+    <div class="container">
+        <form method="POST" >
+            {{ form.as_p }}
+            {% csrf_token %}
+            <input type="submit" , class="btn btn-primary" , value="Submit">
+        </form>
+
+    </div>
+
+{% endblock %}
