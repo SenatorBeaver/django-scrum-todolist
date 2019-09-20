@@ -1,3 +1,4 @@
+from django.forms import ModelForm, SelectDateWidget, SplitDateTimeWidget, DateTimeInput
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse, reverse_lazy
@@ -33,13 +34,20 @@ class ProjectDeleteView(DeleteView):
     model = models.Project
     success_url = reverse_lazy('todolist:projects')
 
+class TodoitemForm(ModelForm):
+    class Meta:
+        model = models.TodoItem
+        fields = ('text', 'priority', 'due_date', 'project')
+        widgets = {
+            'due_date': DateTimeInput
+        }
+
 class TodoitemCreateView(CreateView):
     model = models.TodoItem
-    fields = ('text', 'priority', 'due_date', 'project')
-
-class TodoitemUpdateView(UpdateView):
-    model = models.TodoItem
-    fields = ('text', 'priority', 'due_date')
+    form_class = TodoitemForm
+	
+class TodoitemUpdateView(TodoitemCreateView):
+    pass
 
 class TodoitemDeleteView(DeleteView):
     model = models.TodoItem
