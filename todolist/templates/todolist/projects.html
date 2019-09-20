@@ -22,15 +22,11 @@
         {% if projects %}
             <ul>
                 {% for project in projects %}
-                    <li> <a href="{% url 'todolist:show_todo_by_proj' project.id %}">{{ project.name }}</a>  </li>
-                    <p>  {{ project.desc }} </p>
-                    <!--
-                    <form method="POST" action="{# url 'todolist:project_delete' id #}">
-                        {{ form.as_p }}
-                        {% csrf_token %}
-                        <input type="submit" , class="btn btn-primary" , value="Delete">
-                    </form>
-                    -->
+                    <li> <a href="{% url 'todolist:show_todo_by_proj' project.id %}">{{ project.name }}</a> </li>
+                    <p>{{ project.description }}</p>
+                    <a href="{% url 'todolist:project_edit' project.id %}" class="btn btn-warning">Edit</a>
+                    <a href="{% url 'todolist:project_delete' project.id %}" class="btn btn-danger">Delete</a>
+                    <a href="{% url 'todolist:project_details' project.id %}" class="btn btn-info">Details</a>
                     <br/>
                 {% endfor %}
             </ul>
