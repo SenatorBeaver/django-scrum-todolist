@@ -1,6 +1,6 @@
 from django.forms import ModelForm, SelectDateWidget, SplitDateTimeWidget, DateTimeInput
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -61,9 +61,9 @@ class TodoitemsListView(ListView):
     def get_queryset(self):
         if 'id' in self.kwargs:
             project = get_object_or_404(models.Project, id=self.kwargs['id'])
-            return models.TodoItem.objects.filter(done=False).filter(project=project)
+            return models.TodoItem.objects.filter(done_date=None).filter(project=project)
         else:
-            return models.TodoItem.objects.filter(done=False)
+            return models.TodoItem.objects.filter(done_date=None)
 
 class TodoitemsToday(TodoitemsListView):
     def get_queryset(self):
@@ -76,10 +76,10 @@ class TodoitemDetailView(DetailView):
     model = models.TodoItem
     template_name = 'todolist/todoitem_detail.html'
 
-class TodoitemDone(TodoitemDetailView):
-    model = models.TodoItem
-    def get_object(self, queryset=None):
-        obj = super().get_object(queryset)
-        obj.done = True
-        obj.save()
-        return obj
+
+def todoitem_done(request, pk):
+    obj = get_object_or_404(models.TodoItem, pk=pk)
+    obj.done_date = timezone.now()
+    obj.save()
+    #TODO redirect to previous viewed page
+    return redirect('todolist:index')
