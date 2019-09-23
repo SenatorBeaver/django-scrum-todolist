@@ -46,8 +46,9 @@ class TodoitemCreateView(CreateView):
     model = models.TodoItem
     form_class = TodoitemForm
 	
-class TodoitemUpdateView(TodoitemCreateView):
-    pass
+class TodoitemUpdateView(UpdateView):
+    model = models.TodoItem
+    form_class = TodoitemForm
 
 class TodoitemDeleteView(DeleteView):
     model = models.TodoItem
