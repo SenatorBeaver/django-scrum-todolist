@@ -1,4 +1,6 @@
 from django import forms
+from django.forms import DateTimeInput
+
 from . import models
 
 
@@ -16,14 +18,19 @@ class FormProjectDelete(forms.ModelForm):
         model = models.Project
         fields = []
 
-class FormTodo(forms.ModelForm):
-    class Meta():
+
+class TodoitemForm(forms.ModelForm):
+    class Meta:
         model = models.TodoItem
-        fields = '__all__'
+        fields = ('text', 'priority', 'period_value' , 'period_type', 'due_date', 'project')
+        widgets = {
+            'due_date': DateTimeInput
+        }
 
     def __init__(self, *args, **kwargs):
-        super(FormTodo, self).__init__(*args, **kwargs)
-        self.fields['label_id'].required = False
+        super(TodoitemForm, self).__init__(*args, **kwargs)
+        self.fields['project'].required = False
+        self.fields['due_date'].required = False
 
 
 class FormTodoDelete(forms.ModelForm):

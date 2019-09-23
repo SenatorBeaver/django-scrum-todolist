@@ -20,10 +20,10 @@ class Project(models.Model):
         return reverse('todolist:project_details', kwargs={'pk':self.id})
 
     def __str__(self):
-        return f"Project ID:{self.id} NAME:'{self.name}'. Description:'{self.description}'"
+        return f"{self.name}"
 
     def __repr__(self):
-        return self.__str__()
+        return f"{self.id}"
 
 
 class TodoItem(models.Model):
@@ -39,7 +39,7 @@ class TodoItem(models.Model):
         (4, 'Co miesiąc'),
         (5, 'Co rok'),
     ]
-    period_type = models.PositiveSmallIntegerField(null=False, default=0)
+    period_type = models.PositiveSmallIntegerField(null=False, default=0, choices=PERIOD_TYPE_CHOICES)
 
     PRIORITY_CHOICES = [
         (0, 'Najważeniejszy'),

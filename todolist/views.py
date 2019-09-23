@@ -5,6 +5,7 @@ from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
+from todolist.forms import TodoitemForm
 from . import models
 from . import forms
 
@@ -34,13 +35,6 @@ class ProjectDeleteView(DeleteView):
     model = models.Project
     success_url = reverse_lazy('todolist:projects')
 
-class TodoitemForm(ModelForm):
-    class Meta:
-        model = models.TodoItem
-        fields = ('text', 'priority', 'due_date', 'project')
-        widgets = {
-            'due_date': DateTimeInput
-        }
 
 class TodoitemCreateView(CreateView):
     model = models.TodoItem
