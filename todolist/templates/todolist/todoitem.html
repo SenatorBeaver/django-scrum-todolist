@@ -24,8 +24,10 @@
                 {% for todoitem in todo_list %}
                     <li>
                         <a href="{% url 'todolist:todoitem_done' todoitem.id %}"><button class="btn">done</button></a>
-                        <a href="{% url 'todolist:todoitem_detail' todoitem.id %}">{{ todoitem.text }}</a> </li>
-                    <p>  {{ todoitem.due_date }} </p>
+                        <a href="{% url 'todolist:todoitem_detail' todoitem.id %}">{{ todoitem.text }}</a>
+                    {% if todoitem.due_date %} {{ todoitem.due_date }} {% endif %}
+                    </li>
+
                     <br/>
                 {% endfor %}
             </ul>

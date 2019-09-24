@@ -31,6 +31,7 @@
     <p>PROJECT: {{ todoitem.project }}</p>
     <a href="{% url 'todolist:todoitem_delete' todoitem.id %}" class="btn btn-danger">Delete</a>
     <a href="{% url 'todolist:todoitem_edit' todoitem.id %}" class="btn btn-warning">Edit</a>
+    <a href="{% url 'todolist:todoitem_time_edit' todoitem.id %}" class="btn btn-warning">Edit time</a>
 
     </div>
 {% endblock %}

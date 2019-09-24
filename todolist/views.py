@@ -5,9 +5,8 @@ from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
-from todolist.forms import TodoitemForm
+from todolist.forms import TodoitemForm, TodoitemTimeForm
 from . import models
-from . import forms
 
 # Create your views here.
 
@@ -43,6 +42,10 @@ class TodoitemCreateView(CreateView):
 class TodoitemUpdateView(UpdateView):
     model = models.TodoItem
     form_class = TodoitemForm
+
+class TodoitemUpdateTimeView(UpdateView):
+    model = models.TodoItem
+    form_class = TodoitemTimeForm
 
 class TodoitemDeleteView(DeleteView):
     model = models.TodoItem
