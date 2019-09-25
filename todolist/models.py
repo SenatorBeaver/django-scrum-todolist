@@ -1,6 +1,6 @@
 from django.db import models
 from django.urls import reverse
-
+from django.utils import timezone
 
 class Label(models.Model):
     label_id = models.AutoField(primary_key=True)
@@ -25,22 +25,29 @@ class Project(models.Model):
     def __repr__(self):
         return f"{self.id}"
 
+class PeriodType():
+    NONE = 0
+    EVERY_DAY = 1
+    EVERY_WEEK = 2
+    EVERY_MONTH = 3
+    EVERY_YEAR = 4
+
+    CHOICES = [
+        (NONE, 'Brak'),
+        (EVERY_DAY, 'Co dzień'),
+        (EVERY_WEEK, 'Co tydzień'),
+        (EVERY_MONTH, 'Co miesiąc'),
+        (EVERY_YEAR, 'Co rok'),
+    ]
+
 
 class TodoItem(models.Model):
     text = models.CharField(unique=False, max_length=1024)
     label_id = models.ForeignKey(Label, on_delete=models.CASCADE, null=True)
     due_date = models.DateField(null=True)
-    due_time = models.TimeField(null=True)
+    due_time = models.TimeField(null=True, blank=True)
     period_value = models.PositiveSmallIntegerField(null=False, default=0)
-    PERIOD_TYPE_CHOICES = [
-        (0, 'Brak'),
-        (1, 'Co godzinę'),
-        (2, 'Co dzień'),
-        (3, 'Co tydzień'),
-        (4, 'Co miesiąc'),
-        (5, 'Co rok'),
-    ]
-    period_type = models.PositiveSmallIntegerField(null=False, default=0, choices=PERIOD_TYPE_CHOICES)
+    period_type = models.PositiveSmallIntegerField(null=False, default=0, choices=PeriodType.CHOICES)
 
     PRIORITY_CHOICES = [
         (0, 'Najważeniejszy'),
@@ -53,6 +60,22 @@ class TodoItem(models.Model):
     priority = models.PositiveSmallIntegerField(choices=PRIORITY_CHOICES, default=3)
     project = models.ForeignKey(Project, related_name='project_todoitems', on_delete=models.CASCADE, null=True)
     done_date = models.DateTimeField(null=True)
+
+
+    def done(self):
+        if self.period_type == PeriodType.NONE:
+            self.done_date = timezone.now()
+            self.save()
+        else:
+            # TODO: calculate next
+            if self.period_type == PeriodType.EVERY_DAY:
+                self.due_date += 
+            elif self.period_type == PeriodType.EVERY_WEEK:
+                self.due_date +=
+            elif self.period_type == PeriodType.EVERY_MONTH:
+                self.due_date +=
+            elif self.period_type == PeriodType.EVERY_YEAR:
+                self.due_date += 
 
     def get_absolute_url(self):
         return reverse('todolist:todoitem_detail', kwargs={'pk':self.id})

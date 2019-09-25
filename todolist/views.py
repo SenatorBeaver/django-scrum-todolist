@@ -75,9 +75,17 @@ class TodoitemDetailView(DetailView):
     template_name = 'todolist/todoitem_detail.html'
 
 
+def refresh_task(request):
+    tomorrow = timezone.datetime.today() + timezone.timedelta(days=1)
+    overdue_queryset = models.TodoItem.objects.filter(due_date__lt=timezone.make_aware(tomorrow))
+	# TODO implement it
+	# 	for each cyclic overdue item - duplicate it as new todo item, then mark old item as done
+
+    return redirect('todolist:index')
+
+
 def todoitem_done(request, pk):
     obj = get_object_or_404(models.TodoItem, pk=pk)
-    obj.done_date = timezone.now()
-    obj.save()
+    obj.done()
     #TODO redirect to previous viewed page
     return redirect('todolist:index')
