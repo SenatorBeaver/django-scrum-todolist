@@ -1,5 +1,5 @@
 from django import forms
-from django.forms import DateTimeInput
+from django.forms import DateInput
 
 from . import models
 
@@ -8,15 +8,15 @@ class TodoitemForm(forms.ModelForm):
         model = models.TodoItem
         fields = ('text', 'priority', 'project')
         widgets = {
-            'due_date': DateTimeInput
+            'due_date': DateInput
         }
 
 class TodoitemTimeForm(forms.ModelForm):
     class Meta:
         model = models.TodoItem
-        fields = ('period_value', 'period_type', 'due_date')
+        fields = ('period_type', 'period_value', 'due_date')
         widgets = {
-            'due_date': DateTimeInput
+            'due_date': DateInput
         }
 
     def __init__(self, *args, **kwargs):

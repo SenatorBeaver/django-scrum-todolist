@@ -29,7 +29,8 @@ class Project(models.Model):
 class TodoItem(models.Model):
     text = models.CharField(unique=False, max_length=1024)
     label_id = models.ForeignKey(Label, on_delete=models.CASCADE, null=True)
-    due_date = models.DateTimeField(null=True)
+    due_date = models.DateField(null=True)
+    due_time = models.TimeField(null=True)
     period_value = models.PositiveSmallIntegerField(null=False, default=0)
     PERIOD_TYPE_CHOICES = [
         (0, 'Brak'),
