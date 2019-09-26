@@ -104,10 +104,10 @@ def refresh_task(request):
     return redirect('todolist:index')
 
 class TodoitemDoneView(View):
-    def post(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         obj = get_object_or_404(models.TodoItem, pk=kwargs['pk'])
         obj.done()
-        redirect_path = request.POST.get('next', '')
+        redirect_path = kwargs['next']
         if is_safe_url(redirect_path, allowed_hosts=request.get_host()):
             return HttpResponseRedirect(redirect_path)
         return redirect('todolist:index')
