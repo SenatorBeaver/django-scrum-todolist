@@ -93,8 +93,13 @@ def refresh_task(request):
     tomorrow = timezone.datetime.today() + timezone.timedelta(days=1)
     overdue_cyclic_queryset = models.TodoItem.objects.filter(due_date__lt=timezone.make_aware(tomorrow)).filter(period_type__gt=0)
     for task in overdue_cyclic_queryset:
+        due_date = task.due_date
         task.done()
-    # for each cyclic overdue item - duplicate it as new todo item, then mark old item as done
+        #new object
+        task.pk = None
+        task.due_date = due_date
+        task.period_type = models.TodoitemPeriodType.NONE
+        task.save()
 
     return redirect('todolist:index')
 

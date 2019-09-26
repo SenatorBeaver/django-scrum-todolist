@@ -1,4 +1,5 @@
 import dateutil.relativedelta
+from django.core.validators import MinValueValidator
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
@@ -26,7 +27,7 @@ class Project(models.Model):
     def __repr__(self):
         return f"{self.id}"
 
-class PeriodType():
+class TodoitemPeriodType():
     NONE = 0
     EVERY_DAY = 1
     EVERY_WEEK = 2
@@ -47,8 +48,8 @@ class TodoItem(models.Model):
     label_id = models.ForeignKey(Label, on_delete=models.CASCADE, null=True)
     due_date = models.DateField(null=True)
     due_time = models.TimeField(null=True, blank=True)
-    period_value = models.PositiveSmallIntegerField(null=False, default=0)
-    period_type = models.PositiveSmallIntegerField(null=False, default=0, choices=PeriodType.CHOICES)
+    period_value = models.PositiveSmallIntegerField(null=False, default=1, validators=[MinValueValidator(1),])
+    period_type = models.PositiveSmallIntegerField(null=False, default=0, choices=TodoitemPeriodType.CHOICES)
 
     PRIORITY_CHOICES = [
         (0, 'Najważeniejszy'),
@@ -64,15 +65,15 @@ class TodoItem(models.Model):
 
 
     def done(self):
-        if self.period_type == PeriodType.NONE:
+        if self.period_type == TodoitemPeriodType.NONE:
             self.done_date = timezone.now()
             self.save()
         else:
             switcher = {
-                PeriodType.EVERY_DAY : 'days',
-                PeriodType.EVERY_WEEK: 'weeks',
-                PeriodType.EVERY_MONTH: 'months',
-                PeriodType.EVERY_YEAR: 'years',
+                TodoitemPeriodType.EVERY_DAY : 'days',
+                TodoitemPeriodType.EVERY_WEEK: 'weeks',
+                TodoitemPeriodType.EVERY_MONTH: 'months',
+                TodoitemPeriodType.EVERY_YEAR: 'years',
             }
             kwargs = { switcher.get(self.period_type): self.period_value}
             self.due_date += dateutil.relativedelta.relativedelta(**kwargs)
