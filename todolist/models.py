@@ -68,16 +68,15 @@ class TodoItem(models.Model):
             self.done_date = timezone.now()
             self.save()
         else:
-            if timezone.now().date() > self.due_date:
-                switcher = {
-                    PeriodType.EVERY_DAY : 'days',
-                    PeriodType.EVERY_WEEK: 'weeks',
-                    PeriodType.EVERY_MONTH: 'months',
-                    PeriodType.EVERY_YEAR: 'years',
-                }
-                kwargs = { switcher.get(self.period_type): self.period_value}
-                self.due_date += dateutil.relativedelta.relativedelta(**kwargs)
-                self.save()
+            switcher = {
+                PeriodType.EVERY_DAY : 'days',
+                PeriodType.EVERY_WEEK: 'weeks',
+                PeriodType.EVERY_MONTH: 'months',
+                PeriodType.EVERY_YEAR: 'years',
+            }
+            kwargs = { switcher.get(self.period_type): self.period_value}
+            self.due_date += dateutil.relativedelta.relativedelta(**kwargs)
+            self.save()
 
     def get_absolute_url(self):
         return reverse('todolist:todoitem_detail', kwargs={'pk':self.id})
