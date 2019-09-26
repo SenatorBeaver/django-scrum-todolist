@@ -26,6 +26,8 @@
                         <a href="{% url 'todolist:todoitem_done' todoitem.id %}"><button class="btn">done</button></a>
                         <a href="{% url 'todolist:todoitem_detail' todoitem.id %}">{{ todoitem.text }}</a>
                     {% if todoitem.due_date %} {{ todoitem.due_date }} {% endif %}
+                    {% if todoitem.period_type > 0 %} (periodic) {% endif %}
+                    {% if todoitem.project %} - {{ todoitem.project.name }} {% endif %}
                     </li>
 
                     <br/>

@@ -1,3 +1,4 @@
+import dateutil.relativedelta
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
@@ -67,15 +68,16 @@ class TodoItem(models.Model):
             self.done_date = timezone.now()
             self.save()
         else:
-            # TODO: calculate next
-            if self.period_type == PeriodType.EVERY_DAY:
-                self.due_date += 
-            elif self.period_type == PeriodType.EVERY_WEEK:
-                self.due_date +=
-            elif self.period_type == PeriodType.EVERY_MONTH:
-                self.due_date +=
-            elif self.period_type == PeriodType.EVERY_YEAR:
-                self.due_date += 
+            if timezone.now().date() > self.due_date:
+                switcher = {
+                    PeriodType.EVERY_DAY : 'days',
+                    PeriodType.EVERY_WEEK: 'weeks',
+                    PeriodType.EVERY_MONTH: 'months',
+                    PeriodType.EVERY_YEAR: 'years',
+                }
+                kwargs = { switcher.get(self.period_type): self.period_value}
+                self.due_date += dateutil.relativedelta.relativedelta(**kwargs)
+                self.save()
 
     def get_absolute_url(self):
         return reverse('todolist:todoitem_detail', kwargs={'pk':self.id})

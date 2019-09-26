@@ -8,27 +8,33 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from todolist.forms import TodoitemForm, TodoitemTimeForm
 from . import models
 
+
 # Create your views here.
 
 class ProjectListView(ListView):
     template_name = 'todolist/projects.html'
     context_object_name = 'projects'
-    model=models.Project
+    model = models.Project
+
     def get_queryset(self):
         return models.Project.objects.all()
+
 
 class ProjectDetailView(DetailView):
     context_object_name = 'project_detail'
     model = models.Project
     template_name = 'todolist/project_details.html'
 
+
 class ProjectCreateView(CreateView):
     model = models.Project
-    fields = ('name', 'description', )
+    fields = ('name', 'description',)
+
 
 class ProjectUpdateView(UpdateView):
     model = models.Project
-    fields = ('name', 'description', )
+    fields = ('name', 'description',)
+
 
 class ProjectDeleteView(DeleteView):
     model = models.Project
@@ -38,14 +44,17 @@ class ProjectDeleteView(DeleteView):
 class TodoitemCreateView(CreateView):
     model = models.TodoItem
     form_class = TodoitemForm
-	
+
+
 class TodoitemUpdateView(UpdateView):
     model = models.TodoItem
     form_class = TodoitemForm
 
+
 class TodoitemUpdateTimeView(UpdateView):
     model = models.TodoItem
     form_class = TodoitemTimeForm
+
 
 class TodoitemDeleteView(DeleteView):
     model = models.TodoItem
@@ -55,7 +64,8 @@ class TodoitemDeleteView(DeleteView):
 class TodoitemsListView(ListView):
     template_name = 'todolist/todoitem.html'
     context_object_name = 'todo_list'
-    model=models.TodoItem
+    model = models.TodoItem
+
     def get_queryset(self):
         if 'id' in self.kwargs:
             project = get_object_or_404(models.Project, id=self.kwargs['id'])
@@ -63,11 +73,13 @@ class TodoitemsListView(ListView):
         else:
             return models.TodoItem.objects.filter(done_date=None)
 
+
 class TodoitemsToday(TodoitemsListView):
     def get_queryset(self):
         queryset = super().get_queryset()
         tomorrow = timezone.datetime.today() + timezone.timedelta(days=1)
         return queryset.filter(due_date__lt=timezone.make_aware(tomorrow))
+
 
 class TodoitemDetailView(DetailView):
     context_object_name = 'todoitem'
@@ -77,9 +89,10 @@ class TodoitemDetailView(DetailView):
 
 def refresh_task(request):
     tomorrow = timezone.datetime.today() + timezone.timedelta(days=1)
-    overdue_queryset = models.TodoItem.objects.filter(due_date__lt=timezone.make_aware(tomorrow))
-	# TODO implement it
-	# 	for each cyclic overdue item - duplicate it as new todo item, then mark old item as done
+    overdue_cyclic_queryset = models.TodoItem.objects.filter(due_date__lt=timezone.make_aware(tomorrow)).filter(period_type__gt=0)
+    for task in overdue_cyclic_queryset:
+        task.done()
+    # for each cyclic overdue item - duplicate it as new todo item, then mark old item as done
 
     return redirect('todolist:index')
 
@@ -87,5 +100,5 @@ def refresh_task(request):
 def todoitem_done(request, pk):
     obj = get_object_or_404(models.TodoItem, pk=pk)
     obj.done()
-    #TODO redirect to previous viewed page
+    # TODO redirect to previous viewed page
     return redirect('todolist:index')
