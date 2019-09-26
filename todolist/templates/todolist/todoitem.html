@@ -23,7 +23,12 @@
             <ul>
                 {% for todoitem in todo_list %}
                     <li>
-                        <a href="{% url 'todolist:todoitem_done' todoitem.id %}"><button class="btn">done</button></a>
+                    <form method="POST" action="{% url 'todolist:todoitem_done' todoitem.id %}">
+                        {% csrf_token %}
+                        <input type="hidden", name="next", value="{{ request.path }}">
+                        <button class="btn" type="submit">done</button>
+                    </form>
+
                         <a href="{% url 'todolist:todoitem_detail' todoitem.id %}">{{ todoitem.text }}</a>
                     {% if todoitem.due_date %} {{ todoitem.due_date }} {% endif %}
                     {% if todoitem.period_type > 0 %} (periodic) {% endif %}

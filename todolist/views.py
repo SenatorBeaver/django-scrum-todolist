@@ -3,6 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
+from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
 from todolist.forms import TodoitemForm, TodoitemTimeForm
@@ -96,9 +97,9 @@ def refresh_task(request):
 
     return redirect('todolist:index')
 
-
-def todoitem_done(request, pk):
-    obj = get_object_or_404(models.TodoItem, pk=pk)
-    obj.done()
-    # TODO redirect to previous viewed page
-    return redirect('todolist:index')
+class TodoitemDoneView(View):
+    def post(self, request, *args, **kwargs):
+        obj = get_object_or_404(models.TodoItem, pk=kwargs['pk'])
+        obj.done()
+        redirect = request.POST.get('next', '')
+        return HttpResponseRedirect(redirect)

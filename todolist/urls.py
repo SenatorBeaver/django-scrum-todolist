@@ -1,5 +1,7 @@
 from django.urls import path, include
 
+
+
 from . import views
 
 app_name = 'todolist'
@@ -20,6 +22,6 @@ urlpatterns = [
     path('todo/edit/time/<pk>', views.TodoitemUpdateTimeView.as_view(), name='todoitem_time_edit'),
     path('todo/delete/<pk>', views.TodoitemDeleteView.as_view(), name='todoitem_delete'),
     path('todo/details/<pk>', views.TodoitemDetailView.as_view(), name='todoitem_detail'),
-    path('todo/done/<pk>', views.todoitem_done, name='todoitem_done'),
+    path('todo/done/<pk>', views.TodoitemDoneView.as_view(), name='todoitem_done'),
     path('todo/by_project/<int:id>', views.TodoitemsListView.as_view(), name='show_todo_by_proj'),
 ]
