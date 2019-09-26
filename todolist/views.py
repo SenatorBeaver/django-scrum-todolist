@@ -3,6 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
+from django.utils.http import is_safe_url
 from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
@@ -101,5 +102,7 @@ class TodoitemDoneView(View):
     def post(self, request, *args, **kwargs):
         obj = get_object_or_404(models.TodoItem, pk=kwargs['pk'])
         obj.done()
-        redirect = request.POST.get('next', '')
-        return HttpResponseRedirect(redirect)
+        redirect_path = request.POST.get('next', '')
+        if is_safe_url(redirect_path, allowed_hosts=request.get_host()):
+            return HttpResponseRedirect(redirect_path)
+        return redirect('todolist:index')
