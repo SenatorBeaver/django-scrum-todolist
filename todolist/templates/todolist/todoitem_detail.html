@@ -25,9 +25,17 @@
     <p>TEXT: {{ todoitem.text }}</p>
     <p>PRIORITY: {{ todoitem.get_priority_display }}</p>
     <p>DUE_DATE: {{ todoitem.due_date }}</p>
+        {% if todoitem.due_time %}
+            <p>Time: {{ todoitem.due_time }}</p>
+        {% endif %}
+        {% if todoitem.period_type %}
+            <p>Cyclic: {{ todoitem.get_period_type_display }}, period: {{ todoitem.period_value }}</p>
+        {% endif %}
+
     <p>PROJECT: {{ todoitem.project }}</p>
     <a href="{% url 'todolist:todoitem_delete' todoitem.id %}" class="btn btn-danger">Delete</a>
     <a href="{% url 'todolist:todoitem_edit' todoitem.id %}" class="btn btn-warning">Edit</a>
+    <a href="{% url 'todolist:todoitem_time_edit' todoitem.id %}" class="btn btn-warning">Edit time</a>
 
     </div>
 {% endblock %}

@@ -1,33 +1,23 @@
 from django import forms
+from django.forms import DateInput, TimeInput
+
 from . import models
 
-
-class FormProject(forms.ModelForm):
-    class Meta():
-        model = models.Project
-        fields = '__all__'
+class TodoitemForm(forms.ModelForm):
+    class Meta:
+        model = models.TodoItem
+        fields = ('text', 'priority', 'project')
         widgets = {
-            'description': forms.Textarea(),
+            'due_date': DateInput,
+            'due_time': TimeInput,
         }
 
-
-class FormProjectDelete(forms.ModelForm):
-    class Meta():
-        model = models.Project
-        fields = []
-
-class FormTodo(forms.ModelForm):
-    class Meta():
+class TodoitemTimeForm(forms.ModelForm):
+    class Meta:
         model = models.TodoItem
-        fields = '__all__'
-
-    def __init__(self, *args, **kwargs):
-        super(FormTodo, self).__init__(*args, **kwargs)
-        self.fields['label_id'].required = False
-
-
-class FormTodoDelete(forms.ModelForm):
-    class Meta():
-        model = models.TodoItem
-        fields = []
+        fields = ('period_type', 'period_value', 'due_date', 'due_time')
+        widgets = {
+            'due_date': DateInput,
+            'due_time' : TimeInput,
+        }
 

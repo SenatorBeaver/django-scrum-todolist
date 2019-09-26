@@ -3,51 +3,60 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
+from django.utils.http import is_safe_url
+from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
+from todolist.forms import TodoitemForm, TodoitemTimeForm
 from . import models
-from . import forms
+
 
 # Create your views here.
 
 class ProjectListView(ListView):
     template_name = 'todolist/projects.html'
     context_object_name = 'projects'
-    model=models.Project
+    model = models.Project
+
     def get_queryset(self):
         return models.Project.objects.all()
+
 
 class ProjectDetailView(DetailView):
     context_object_name = 'project_detail'
     model = models.Project
     template_name = 'todolist/project_details.html'
 
+
 class ProjectCreateView(CreateView):
     model = models.Project
-    fields = ('name', 'description', )
+    fields = ('name', 'description',)
+
 
 class ProjectUpdateView(UpdateView):
     model = models.Project
-    fields = ('name', 'description', )
+    fields = ('name', 'description',)
+
 
 class ProjectDeleteView(DeleteView):
     model = models.Project
     success_url = reverse_lazy('todolist:projects')
 
-class TodoitemForm(ModelForm):
-    class Meta:
-        model = models.TodoItem
-        fields = ('text', 'priority', 'due_date', 'project')
-        widgets = {
-            'due_date': DateTimeInput
-        }
 
 class TodoitemCreateView(CreateView):
     model = models.TodoItem
     form_class = TodoitemForm
-	
-class TodoitemUpdateView(TodoitemCreateView):
-    pass
+
+
+class TodoitemUpdateView(UpdateView):
+    model = models.TodoItem
+    form_class = TodoitemForm
+
+
+class TodoitemUpdateTimeView(UpdateView):
+    model = models.TodoItem
+    form_class = TodoitemTimeForm
+
 
 class TodoitemDeleteView(DeleteView):
     model = models.TodoItem
@@ -57,7 +66,8 @@ class TodoitemDeleteView(DeleteView):
 class TodoitemsListView(ListView):
     template_name = 'todolist/todoitem.html'
     context_object_name = 'todo_list'
-    model=models.TodoItem
+    model = models.TodoItem
+
     def get_queryset(self):
         if 'id' in self.kwargs:
             project = get_object_or_404(models.Project, id=self.kwargs['id'])
@@ -65,11 +75,13 @@ class TodoitemsListView(ListView):
         else:
             return models.TodoItem.objects.filter(done_date=None)
 
+
 class TodoitemsToday(TodoitemsListView):
     def get_queryset(self):
         queryset = super().get_queryset()
         tomorrow = timezone.datetime.today() + timezone.timedelta(days=1)
         return queryset.filter(due_date__lt=timezone.make_aware(tomorrow))
+
 
 class TodoitemDetailView(DetailView):
     context_object_name = 'todoitem'
@@ -77,9 +89,25 @@ class TodoitemDetailView(DetailView):
     template_name = 'todolist/todoitem_detail.html'
 
 
-def todoitem_done(request, pk):
-    obj = get_object_or_404(models.TodoItem, pk=pk)
-    obj.done_date = timezone.now()
-    obj.save()
-    #TODO redirect to previous viewed page
+def refresh_task(request):
+    tomorrow = timezone.datetime.today() + timezone.timedelta(days=1)
+    overdue_cyclic_queryset = models.TodoItem.objects.filter(due_date__lt=timezone.make_aware(tomorrow)).filter(period_type__gt=0)
+    for task in overdue_cyclic_queryset:
+        due_date = task.due_date
+        task.done()
+        #new object
+        task.pk = None
+        task.due_date = due_date
+        task.period_type = models.TodoitemPeriodType.NONE
+        task.save()
+
     return redirect('todolist:index')
+
+class TodoitemDoneView(View):
+    def get(self, request, *args, **kwargs):
+        obj = get_object_or_404(models.TodoItem, pk=kwargs['pk'])
+        obj.done()
+        redirect_path = kwargs['next']
+        if is_safe_url(redirect_path, allowed_hosts=request.get_host()):
+            return HttpResponseRedirect(redirect_path)
+        return redirect('todolist:index')
